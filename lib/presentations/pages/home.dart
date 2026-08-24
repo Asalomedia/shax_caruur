@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:math' as m;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -42,7 +41,7 @@ class Home extends StatelessWidget {
             if (state.runtimeType == InitialState) {
               log("yeey it is initial");
               state as InitialState;
-              return init();
+              return init(state);
             }
             return SizedBox.shrink();
           },
@@ -51,12 +50,12 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget init() {
+  Widget init(HomeStates state) {
     return LayoutBuilder(
       builder: (context, constraint) {
         return UnconstrainedBox(
           alignment: Alignment.center,
-          child: Shaxboardwidget(constraint: constraint),
+          child: Shaxboardwidget(constraint: constraint, state: state),
         );
       },
     );
