@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shax_caruur/models/piece.dart';
-import 'package:shax_caruur/models/player.dart' show Player;
 
 class Position {
   final int positionId;
