@@ -1,7 +1,12 @@
+import 'dart:developer';
 import 'dart:math' as m;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:shax_caruur/presentations/widgets/shaxBoardWidget.dart';
+import 'package:shax_caruur/state_management/home_cubit.dart';
+import 'package:shax_caruur/state_management/home_states.dart';
 
 class Home extends StatelessWidget {
   const new({super.key});
@@ -31,22 +36,29 @@ class Home extends StatelessWidget {
             tileMode: TileMode.repeated,
           ),
         ),
-        child: SizedBox(
-          width: size.width,
-          height: size.width,
-          child: LayoutBuilder(
-            builder: (context, consttraint) {
-              final width = consttraint.maxWidth;
-              final height = consttraint.maxHeight;
-              final boardsize = m.min(width, height);
-              return UnconstrainedBox(
-                alignment: Alignment.center,
-                child: Shaxboardwidget(size: Size.square(boardsize)),
-              );
-            },
-          ),
+        child: BlocConsumer<HomeCubit, HomeStates>(
+          listener: (context, state) {},
+          builder: (context, state) {
+            if (state.runtimeType == InitialState) {
+              log("yeey it is initial");
+              state as InitialState;
+              return init();
+            }
+            return SizedBox.shrink();
+          },
         ),
       ),
+    );
+  }
+
+  Widget init() {
+    return LayoutBuilder(
+      builder: (context, constraint) {
+        return UnconstrainedBox(
+          alignment: Alignment.center,
+          child: Shaxboardwidget(constraint: constraint),
+        );
+      },
     );
   }
 }

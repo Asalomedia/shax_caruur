@@ -1,23 +1,25 @@
 import 'dart:developer';
+import 'dart:math' as m;
 
 import 'package:flutter/material.dart';
-import 'package:shax_caruur/game/positions.dart';
+import 'package:shax_caruur/models/position.dart' show Position;
 
 class Shaxboardwidget extends StatelessWidget {
-  final Size size;
-  const new({super.key, required this.size});
+  final BoxConstraints constraint;
+  const Shaxboardwidget({super.key, required this.constraint});
 
   @override
   Widget build(BuildContext context) {
+    final width = constraint.maxWidth;
+    final height = constraint.maxHeight;
+    final boardsize = m.min(width, height);
+    final Size size = Size.square(boardsize); //size of board
     log(
       "width:${size.width},height:${size.height}",
     ); // widht and height must be same for square
     final double margin = 15.0;
-
-    return CustomPaint(
-      painter: ShaxPainter(),
-      size: Size(size.width - 2 * margin, size.height - 2 * margin),
-    );
+    final Size cSize = Size(size.width - 2 * margin, size.height - 2 * margin);
+    return CustomPaint(painter: ShaxPainter(), size: cSize);
   }
 }
 
@@ -64,52 +66,20 @@ class ShaxPainter extends CustomPainter {
     circlepaint.color = const Color.fromARGB(173, 255, 255, 255);
     circlepaint.style = PaintingStyle.fill;
     List<Position> actualPositions = [
-      Position(
-        coordinate: Offset(0, 0),
-        tpe: PositionsType.topLeft,
-        positionId: 1,
-      ),
-      Position(
-        coordinate: Offset(center.dx, 0),
-        tpe: PositionsType.topCenter,
-        positionId: 2,
-      ),
-      Position(
-        coordinate: Offset(size.width, 0),
-        tpe: PositionsType.topRight,
-        positionId: 3,
-      ),
+      Position(coordinate: Offset(0, 0), positionId: 1),
+      Position(coordinate: Offset(center.dx, 0), positionId: 2),
+      Position(coordinate: Offset(size.width, 0), positionId: 3),
 
-      Position(
-        coordinate: Offset(0, center.dy),
-        tpe: PositionsType.centerLeft,
-        positionId: 4,
-      ),
-      Position(coordinate: center, tpe: PositionsType.center, positionId: 5),
-      Position(
-        coordinate: Offset(size.width, center.dy),
-        tpe: PositionsType.centerRight,
-        positionId: 6,
-      ),
+      Position(coordinate: Offset(0, center.dy), positionId: 4),
+      Position(coordinate: center, positionId: 5),
+      Position(coordinate: Offset(size.width, center.dy), positionId: 6),
 
-      Position(
-        coordinate: Offset(0, size.height),
-        tpe: PositionsType.bottomLeft,
-        positionId: 7,
-      ),
-      Position(
-        coordinate: Offset(center.dx, size.height),
-        tpe: PositionsType.bottomCenter,
-        positionId: 8,
-      ),
-      Position(
-        coordinate: Offset(size.width, size.height),
-        tpe: PositionsType.bottomRight,
-        positionId: 9,
-      ),
+      Position(coordinate: Offset(0, size.height), positionId: 7),
+      Position(coordinate: Offset(center.dx, size.height), positionId: 8),
+      Position(coordinate: Offset(size.width, size.height), positionId: 9),
     ];
     for (Position position in actualPositions) {
-      canvas.drawCircle(position.coordinate!, radius, circlepaint);
+      canvas.drawCircle(position.coordinate, radius, circlepaint);
     }
   }
 

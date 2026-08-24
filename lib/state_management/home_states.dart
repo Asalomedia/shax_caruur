@@ -1,42 +1,31 @@
 import 'package:flutter/foundation.dart' show immutable;
-import 'package:shax_caruur/game/player.dart';
-import 'package:shax_caruur/game/positions.dart';
+
+import 'package:shax_caruur/models/position.dart' show Position;
 
 @immutable
 abstract class HomeStates {
-  final Player currentPlayer;
-
-  const HomeStates({required this.currentPlayer});
+  const HomeStates();
 }
 
 // initial state
 class InitialState extends HomeStates {
-  const InitialState({required super.currentPlayer});
+  const InitialState();
 }
 
 //put items state
 class PuttingState extends HomeStates {
-  final List<Position> positionsOccupied;
-  const PuttingState({
-    required super.currentPlayer,
-    required this.positionsOccupied,
-  });
+  final Set<Position> positionsOccupied;
+  const PuttingState({required this.positionsOccupied});
 }
 
 //moving pieces state
 class MotionState extends HomeStates {
-  final List<Position> positionsOccupied;
-  const MotionState({
-    required super.currentPlayer,
-    required this.positionsOccupied,
-  });
+  final Set<Position> positionsOccupied;
+  const MotionState({required this.positionsOccupied});
 }
 
 //end game state
 class EndgameState extends HomeStates {
-  final List<Position> positionHeWon;
-  const EndgameState({
-    required super.currentPlayer,
-    required this.positionHeWon,
-  });
+  final Set<Position> positionHeWon;
+  const EndgameState({required this.positionHeWon});
 }
