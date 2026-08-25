@@ -40,8 +40,13 @@ class Home extends StatelessWidget {
           builder: (context, state) {
             if (state.runtimeType == InitialState) {
               log("yeey it is initial");
-              state as InitialState;
-              return init(state);
+              return widget(state);
+            } else if (state.runtimeType == DragingState) {
+              log("state is draging");
+              return widget(state);
+            } else if (state.runtimeType == DragEndState) {
+              log("state is dragcancel");
+              return widget(state);
             }
             return SizedBox.shrink();
           },
@@ -50,7 +55,7 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget init(HomeStates state) {
+  Widget widget(HomeStates state) {
     return LayoutBuilder(
       builder: (context, constraint) {
         return UnconstrainedBox(

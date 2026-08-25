@@ -4,20 +4,34 @@ import 'package:shax_caruur/models/player.dart';
 class Position {
   final int positionId;
   final Offset coordinate;
-  Piece? piece;
 
-  Position({required this.positionId, this.piece, required this.coordinate});
-
-  void putPiece(Piece piece) {
-    piece.coordinate = coordinate;
-    this.piece = piece;
-  }
+  Position({required this.positionId, required this.coordinate});
 }
 
 class Piece {
   final int id;
   final Player player;
-  Offset coordinate;
+  final Offset coordinate;
+  final int? positionId;
 
-  Piece({required this.id, required this.coordinate, required this.player});
+  Piece({
+    required this.id,
+    this.positionId,
+    required this.coordinate,
+    required this.player,
+  });
+
+  Piece copyWith({
+    int? newid,
+    Player? newplayer,
+    Offset? newcoordinate,
+    int? posId,
+  }) {
+    return Piece(
+      id: newid ?? id,
+      coordinate: newcoordinate ?? coordinate,
+      player: newplayer ?? player,
+      positionId: posId ?? positionId,
+    );
+  }
 }

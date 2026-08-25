@@ -22,6 +22,7 @@ void drawShax(
   double fromLeft, {
   required BuildContext context,
   required HomeStates state,
+  required double radius,
 }) {
   final double strokeWidth = size.width / 50;
   //DRAW SQUARE
@@ -63,7 +64,6 @@ void drawShax(
   ); //secondary diagnal
 
   //DRAW HABITABLE POINTS (SHOW JOINTS)
-  final double radius = size.width / 30;
   final circlepaint = Paint();
   circlepaint.color = const Color.fromARGB(173, 255, 255, 255);
   circlepaint.style = PaintingStyle.fill;
@@ -115,13 +115,13 @@ void drawPockets(
   Size size, {
   required BuildContext context,
   required HomeStates state,
+  required double radius,
 }) {
-  final double radius = size.width / 20;
   final Paint rockPaint = Paint();
   rockPaint.color = const Color.fromARGB(208, 168, 144, 117);
   final Paint coalPaint = Paint();
   coalPaint.color = const Color.fromARGB(255, 15, 12, 19);
-  final List<Piece> pieces = [
+  List<Piece> pieces = [
     Piece(
       id: 100,
       coordinate: Offset(size.width / 2 - 2 * radius, size.height / 10),
@@ -159,12 +159,32 @@ void drawPockets(
       player: Player.coal,
     ), // this three for rock
   ];
-  for (Piece p in pieces) {
-    canvas.drawCircle(
-      p.coordinate,
-      radius,
-      p.player == Player.rock ? rockPaint : coalPaint,
-    );
+  if (state.runtimeType == InitialState) {
+    for (Piece p in pieces) {
+      canvas.drawCircle(
+        p.coordinate,
+        radius,
+        p.player == Player.rock ? rockPaint : coalPaint,
+      );
+    }
+    BlocProvider.of<HomeCubit>(context).registerPieces(pieces);
+  } else if (state.runtimeType == DragingState) {
+    state as DragingState;
+    for (Piece p in state.pieces) {
+      canvas.drawCircle(
+        p.coordinate,
+        radius,
+        p.player == Player.rock ? rockPaint : coalPaint,
+      );
+    }
+  } else if (state.runtimeType == DragEndState) {
+    state as DragEndState;
+    for (Piece p in state.pieces) {
+      canvas.drawCircle(
+        p.coordinate,
+        radius,
+        p.player == Player.rock ? rockPaint : coalPaint,
+      );
+    }
   }
-  BlocProvider.of<HomeCubit>(context).registerPieces(pieces);
 }

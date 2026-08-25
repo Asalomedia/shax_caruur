@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart' show immutable;
 
-import 'package:shax_caruur/models/position.dart' show Position;
+import 'package:shax_caruur/models/position.dart' show Piece, Position;
 
 @immutable
 abstract class HomeStates {
@@ -12,16 +12,16 @@ class InitialState extends HomeStates {
   const InitialState();
 }
 
-//put items state
-class PuttingState extends HomeStates {
-  final Set<Position> positionsOccupied;
-  const PuttingState({required this.positionsOccupied});
+//draging state
+class DragingState extends HomeStates {
+  final Set<Piece> pieces;
+  const DragingState({required this.pieces});
 }
 
-//moving pieces state
-class MotionState extends HomeStates {
-  final Set<Position> positionsOccupied;
-  const MotionState({required this.positionsOccupied});
+//drag is cancelled
+class DragEndState extends HomeStates {
+  final Set<Piece> pieces;
+  const DragEndState({required this.pieces});
 }
 
 //end game state
