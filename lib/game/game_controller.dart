@@ -19,8 +19,12 @@ class GameController implements IController {
     required Offset whereYouTapped,
     required double pieceRadius,
     required Set<Piece> availablePieces,
+    required Player currentPlayer,
   }) {
-    for (Piece piece in availablePieces) {
+    final Set<Piece> pocket = availablePieces
+        .where((e) => e.player == currentPlayer)
+        .toSet();
+    for (Piece piece in pocket) {
       final Offset diff = whereYouTapped - piece.coordinate;
       final distance = diff.distance;
       if (distance <= pieceRadius) {

@@ -32,7 +32,11 @@ class ShaxPiecesPaint extends StatelessWidget {
     return GestureDetector(
       onPanStart: (details) {
         final Offset whereIHit = details.localPosition;
-        final Piece? piece = homeCubit.findPieceIHit(whereIHit, pieceRadius);
+        final Piece? piece = homeCubit.findPieceIHit(
+          whereIHit,
+          pieceRadius,
+          state.currentPlayer,
+        );
         if (piece != null) {
           log(piece.player.toString());
         }

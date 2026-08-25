@@ -8,6 +8,7 @@ abstract interface class IController {
     required Offset whereYouTapped,
     required double pieceRadius,
     required Set<Piece> availablePieces,
+    required Player currentPlayer,
   });
   Piece? putPieceOnPosition({
     required Piece piece,
