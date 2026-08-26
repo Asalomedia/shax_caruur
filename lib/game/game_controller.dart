@@ -46,9 +46,8 @@ class GameController implements IController {
               .toSet();
         }
       }
-    } else {
-      return null;
     }
+    return null;
   }
 
   @override
