@@ -4,6 +4,7 @@ import 'dart:math' as m;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shax_caruur/models/player.dart' show Player;
+import 'package:shax_caruur/presentations/widgets/confetti.dart';
 import 'package:shax_caruur/presentations/widgets/score_shower.dart';
 import 'package:shax_caruur/presentations/widgets/shaxPiecesWidget.dart'
     show ShaxPiecesPaint;
@@ -14,10 +15,12 @@ import 'package:shax_caruur/utils.dart' as utils;
 
 class Shaxboardwidget extends StatelessWidget {
   final BoxConstraints constraint;
+  final HomeCubit homeCubit;
   final HomeStates state;
   const Shaxboardwidget({
     super.key,
     required this.constraint,
+    required this.homeCubit,
     required this.state,
   });
 
@@ -31,10 +34,15 @@ class Shaxboardwidget extends StatelessWidget {
     return Stack(
       children: [
         CustomPaint(
-          painter: ShaxBoardPainter(context, state: state, margin: margin),
+          painter: ShaxBoardPainter(homeCubit, state: state, margin: margin),
           size: totalSize,
         ),
-        ShaxPiecesPaint(state: state, totalSize: totalSize, margin: margin),
+        ShaxPiecesPaint(
+          state: state,
+          totalSize: totalSize,
+          margin: margin,
+          homeCubit: homeCubit,
+        ),
         ScoreShower(pos: totalSize.width / 5),
         if (state.currentPlayer == Player.rock)
           Positioned(
@@ -66,17 +74,23 @@ class Shaxboardwidget extends StatelessWidget {
               ),
             ),
           ),
+        if (state.runtimeType == EndgameState)
+          Positioned(
+            top: totalSize.width / 2,
+            left: totalSize.height / 2,
+            child: ConfettiApp(),
+          ),
       ],
     );
   }
 }
 
 class ShaxBoardPainter extends CustomPainter {
-  final BuildContext context;
+  final HomeCubit homeCubit;
   final HomeStates state;
   final double margin;
   const ShaxBoardPainter(
-    this.context, {
+    this.homeCubit, {
     required this.state,
     required this.margin,
   });
@@ -101,7 +115,7 @@ class ShaxBoardPainter extends CustomPainter {
       boardSize,
       fromTop,
       fromLeft,
-      context: context,
+      homeCubit: homeCubit,
       state: state,
       radius: jointsRadius,
     );

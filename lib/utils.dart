@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart'
     show
-        BuildContext,
         Canvas,
         Color,
         Colors,
@@ -14,7 +13,6 @@ import 'package:flutter/material.dart'
         TextDirection,
         TextStyle;
 import 'package:flutter/painting.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shax_caruur/models/player.dart' show Player;
 import 'package:shax_caruur/models/position.dart' show Position, Piece;
 import 'package:shax_caruur/state_management/home_cubit.dart';
@@ -25,7 +23,7 @@ void drawShax(
   Size size,
   double fromTop,
   double fromLeft, {
-  required BuildContext context,
+  required HomeCubit homeCubit,
   required HomeStates state,
   required double radius,
 }) {
@@ -123,14 +121,13 @@ void drawShax(
   for (Position position in actualPositions) {
     canvas.drawCircle(position.coordinate, radius, circlepaint);
   }
-  BlocProvider.of<HomeCubit>(context)
-      .registerImportantPositions(actualPositions);
+  homeCubit.registerImportantPositions(actualPositions);
 }
 
 void drawPockets(
   Canvas canvas,
   Size size, {
-  required BuildContext context,
+  required HomeCubit homeCubit,
   required HomeStates state,
   required double radius,
 }) {
@@ -184,7 +181,7 @@ void drawPockets(
         p.player == Player.rock ? rockPaint : coalPaint,
       );
     }
-    BlocProvider.of<HomeCubit>(context).registerPieces(pieces);
+    homeCubit.registerPieces(pieces);
   } else if (state.runtimeType == DragingState) {
     state as DragingState;
     for (Piece p in state.pieces) {

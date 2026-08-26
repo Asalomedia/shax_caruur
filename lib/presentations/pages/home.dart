@@ -7,8 +7,26 @@ import 'package:shax_caruur/presentations/widgets/shaxBoardWidget.dart';
 import 'package:shax_caruur/state_management/home_cubit.dart';
 import 'package:shax_caruur/state_management/home_states.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const new({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  late HomeCubit homeCubit;
+  @override
+  void initState() {
+    super.initState();
+    homeCubit = BlocProvider.of<HomeCubit>(context);
+  }
+
+  @override
+  void dispose() {
+    homeCubit.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,17 +58,17 @@ class Home extends StatelessWidget {
           builder: (context, state) {
             if (state.runtimeType == InitialState) {
               log("yeey it is initial");
-              return widget(state);
+              return stateWidget(state);
             } else if (state.runtimeType == DragingState) {
               log("state is draging");
-              return widget(state);
+              return stateWidget(state);
             } else if (state.runtimeType == DragEndState) {
               log("state is dragcancel");
-              return widget(state);
+              return stateWidget(state);
             } else {
               log("game ended,${state.currentPlayer} had won");
               state as EndgameState;
-              return widget(state);
+              return stateWidget(state);
             }
           },
         ),
@@ -58,12 +76,16 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget widget(HomeStates state) {
+  Widget stateWidget(HomeStates state) {
     return LayoutBuilder(
       builder: (context, constraint) {
         return UnconstrainedBox(
           alignment: Alignment.center,
-          child: Shaxboardwidget(constraint: constraint, state: state),
+          child: Shaxboardwidget(
+            constraint: constraint,
+            homeCubit: homeCubit,
+            state: state,
+          ),
         );
       },
     );

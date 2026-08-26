@@ -99,5 +99,10 @@ class HomeCubit extends Cubit<HomeStates> {
     pieces.clear();
     emit(InitialState(currentPlayer: currentPlayer));
   }
+
+  void dispose() {
+    theOneWefound = null;
+    positions.clear();
+    pieces.clear();
+  }
 }
-//LEGAL MOVES IMPLEMENTATION IS WHAT REMAINING

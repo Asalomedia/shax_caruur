@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:math' as m;
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shax_caruur/models/position.dart';
 import 'package:shax_caruur/state_management/home_cubit.dart';
 import 'package:shax_caruur/state_management/home_states.dart' show HomeStates;
@@ -12,9 +11,11 @@ class ShaxPiecesPaint extends StatelessWidget {
   final HomeStates state;
   final Size totalSize;
   final double margin;
+  final HomeCubit homeCubit;
   const ShaxPiecesPaint({
     super.key,
     required this.state,
+    required this.homeCubit,
     required this.totalSize,
     required this.margin,
   });
@@ -26,7 +27,6 @@ class ShaxPiecesPaint extends StatelessWidget {
     final Size boardSize = Size.square(boardSide); //size of board
     final double jointsRadius = boardSize.width / 30;
     final double pieceRadius = totalSize.width / 15;
-    final HomeCubit homeCubit = BlocProvider.of<HomeCubit>(context);
 
     return GestureDetector(
       onPanStart: (details) {
@@ -53,9 +53,10 @@ class ShaxPiecesPaint extends StatelessWidget {
           homeCubit.dragEnds(whereDragEnds, pieceRadius, jointsRadius);
         }
       },
+
       child: CustomPaint(
         painter: ShaxPiecesPainter(
-          context,
+          homeCubit,
           state: state,
           pieceRadius: pieceRadius,
         ),
@@ -66,11 +67,11 @@ class ShaxPiecesPaint extends StatelessWidget {
 }
 
 class ShaxPiecesPainter extends CustomPainter {
-  final BuildContext context;
+  final HomeCubit homeCubit;
   final HomeStates state;
   final double pieceRadius;
   ShaxPiecesPainter(
-    this.context, {
+    this.homeCubit, {
     required this.state,
     required this.pieceRadius,
   });
@@ -81,7 +82,7 @@ class ShaxPiecesPainter extends CustomPainter {
       utils.drawPockets(
         canvas,
         totalSize,
-        context: context,
+        homeCubit: homeCubit,
         state: state,
         radius: pieceRadius,
       );
