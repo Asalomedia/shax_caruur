@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:shax_caruur/game/game_controller_intf.dart';
@@ -6,12 +7,48 @@ import 'package:shax_caruur/models/position.dart';
 
 class GameController implements IController {
   @override
-  bool canHeWin({
+  Set<Position>? canHeWin({
     required Player currentPlayer,
-    required List<Position> occupiedPositions,
+    required Set<Position> allpositions,
+    required Set<Piece> allpieces,
   }) {
-    // TODO: implement canHeWin
-    throw UnimplementedError();
+    final Set<Piece> piecesPlayed = _piecesPlayed(allpieces);
+    if (piecesPlayed.length >= 5) {
+      List<int> firstRow = [1, 2, 3];
+      List<int> secondRow = [4, 5, 6];
+      List<int> thirdRow = [7, 8, 9];
+      List<int> firstColunn = [1, 4, 7];
+      List<int> secondColumn = [2, 5, 8];
+      List<int> thirdColumn = [3, 6, 9];
+      List<int> primaryDiagnal = [1, 5, 9];
+      List<int> secondaryDiagnal = [3, 5, 7];
+      List<List<int>> winableLines = [
+        firstRow,
+        secondRow,
+        thirdRow,
+        firstColunn,
+        secondColumn,
+        thirdColumn,
+        primaryDiagnal,
+        secondaryDiagnal,
+      ];
+      final Set<Piece> currentPlayersplayedPieces = piecesPlayed
+          .where((p) => p.player == currentPlayer)
+          .toSet();
+      for (List<int> winableLine in winableLines) {
+        final bool heWonWithThisLine = currentPlayersplayedPieces.every(
+          (p) => winableLine.contains(p.positionId),
+        );
+        if (heWonWithThisLine) {
+          log(winableLine.toString());
+          return allpositions
+              .where((p) => winableLine.contains(p.positionId))
+              .toSet();
+        }
+      }
+    } else {
+      return null;
+    }
   }
 
   @override
@@ -92,8 +129,7 @@ class GameController implements IController {
     return pieces.every((piece) => piece.positionId != null);
   }
 
-  bool _fourPiecesPlayed(Set<Piece> pieces) {
-    final int howmanyPlayed = pieces.where((e) => e.positionId != null).length;
-    return howmanyPlayed > 4;
+  Set<Piece> _piecesPlayed(Set<Piece> pieces) {
+    return pieces.where((e) => e.positionId != null).toSet();
   }
 }

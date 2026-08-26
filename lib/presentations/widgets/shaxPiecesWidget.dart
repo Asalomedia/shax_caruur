@@ -5,8 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shax_caruur/models/position.dart';
 import 'package:shax_caruur/state_management/home_cubit.dart';
-import 'package:shax_caruur/state_management/home_states.dart'
-    show DragingState, HomeStates;
+import 'package:shax_caruur/state_management/home_states.dart' show HomeStates;
 import 'package:shax_caruur/utils.dart' as utils;
 
 class ShaxPiecesPaint extends StatelessWidget {

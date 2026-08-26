@@ -47,8 +47,11 @@ class Home extends StatelessWidget {
             } else if (state.runtimeType == DragEndState) {
               log("state is dragcancel");
               return widget(state);
+            } else {
+              log("game ended,${state.currentPlayer} had won");
+              state as EndgameState;
+              return widget(state);
             }
-            return SizedBox.shrink();
           },
         ),
       ),

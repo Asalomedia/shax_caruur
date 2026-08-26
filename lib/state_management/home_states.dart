@@ -29,8 +29,10 @@ class DragEndState extends HomeStates {
 //end game state
 class EndgameState extends HomeStates {
   final Set<Position> positionHeWon;
+  final Set<Piece> pieces;
   const EndgameState({
     required this.positionHeWon,
+    required this.pieces,
     required super.currentPlayer,
   });
 }

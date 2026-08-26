@@ -18,8 +18,9 @@ abstract interface class IController {
     required Set<Position> actualpositions,
     required Set<Piece> pieces,
   });
-  bool canHeWin({
+  Set<Position>? canHeWin({
     required Player currentPlayer,
-    required List<Position> occupiedPositions,
+    required Set<Position> allpositions,
+    required Set<Piece> allpieces,
   });
 }

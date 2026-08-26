@@ -8,7 +8,12 @@ import 'package:flutter/material.dart'
         Paint,
         PaintingStyle,
         Rect,
-        Size;
+        Size,
+        TextSpan,
+        TextPainter,
+        TextDirection,
+        TextStyle;
+import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shax_caruur/models/player.dart' show Player;
 import 'package:shax_caruur/models/position.dart' show Position, Piece;
@@ -186,5 +191,84 @@ void drawPockets(
         p.player == Player.rock ? rockPaint : coalPaint,
       );
     }
+  } else {
+    state as EndgameState;
+    for (Piece p in state.pieces) {
+      canvas.drawCircle(
+        p.coordinate,
+        radius,
+        p.player == Player.rock ? rockPaint : coalPaint,
+      );
+    }
+    final Set<Position> positionHeWon = state.positionHeWon;
+    final Offset first = positionHeWon.first.coordinate;
+    final Offset last = positionHeWon.last.coordinate;
+    final Paint winingLinePaint = Paint();
+    winingLinePaint.strokeWidth = size.width / 40;
+    winingLinePaint.color = currentPlayer == Player.rock
+        ? Colors.red
+        : Colors.yellow;
+    canvas.drawLine(first, last, winingLinePaint);
   }
+
+  _currentPlayerShower(canvas, state, radius, size);
+}
+
+void _currentPlayerShower(
+  Canvas canvas,
+  HomeStates state,
+  double radius,
+  Size size,
+) {
+  if (state.currentPlayer == Player.rock) {
+    _paintPlayer(
+      canvas,
+      size,
+      state,
+      Offset(radius, size.height / 10),
+      state.currentPlayer.toString(),
+    );
+  } else {
+    _paintPlayer(
+      canvas,
+      size,
+      state,
+      Offset(radius, size.height - size.height / 10),
+      state.currentPlayer.toString(),
+    );
+  }
+}
+
+void _paintPlayer(
+  Canvas canvas,
+  Size size,
+  HomeStates state,
+  Offset pos,
+  String text,
+) {
+  // 2. Wrap content in a TextSpan
+  final textSpan = TextSpan(
+    text: state.runtimeType == EndgameState ? "$text ayaa guulaystay" : text,
+    style: TextStyle(
+      fontWeight: FontWeight(600),
+      fontSize: size.width / 20,
+      color: state.currentPlayer == Player.rock ? Colors.red : Colors.black,
+    ),
+  );
+
+  // 3. Initialize TextPainter
+  final textPainter = TextPainter(
+    text: textSpan,
+    textDirection: TextDirection.ltr, // Mandatory layout configuration
+  );
+
+  // 4. Compute the spatial dimensions of the text
+  textPainter.layout(
+    minWidth: 0,
+    maxWidth: size.width, // Wrap text if it exceeds width boundaries
+  );
+
+  // 5. Draw the text to the canvas at a specific coordinate
+  // This example places the top-left corner of the text at coordinate (50, 100)
+  textPainter.paint(canvas, pos);
 }

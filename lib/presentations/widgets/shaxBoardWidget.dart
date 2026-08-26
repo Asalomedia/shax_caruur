@@ -2,8 +2,10 @@ import 'dart:developer';
 import 'dart:math' as m;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shax_caruur/presentations/widgets/shaxPiecesWidget.dart'
     show ShaxPiecesPaint;
+import 'package:shax_caruur/state_management/home_cubit.dart';
 
 import 'package:shax_caruur/state_management/home_states.dart';
 import 'package:shax_caruur/utils.dart' as utils;
@@ -31,6 +33,23 @@ class Shaxboardwidget extends StatelessWidget {
           size: totalSize,
         ),
         ShaxPiecesPaint(state: state, totalSize: totalSize, margin: margin),
+        Positioned(
+          top: 0,
+          right: 0,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: IconButton(
+              onPressed: () {
+                BlocProvider.of<HomeCubit>(context).restart();
+              },
+              icon: const Icon(
+                Icons.restart_alt_sharp,
+                color: Colors.white,
+                size: 50,
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }

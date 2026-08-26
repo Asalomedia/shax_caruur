@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart' show Offset;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shax_caruur/game/game_controller.dart';
@@ -8,7 +6,7 @@ import 'package:shax_caruur/models/player.dart';
 import 'package:shax_caruur/models/position.dart';
 
 import 'package:shax_caruur/state_management/home_states.dart'
-    show DragEndState, DragingState, HomeStates, InitialState;
+    show DragEndState, DragingState, EndgameState, HomeStates, InitialState;
 
 Player currentPlayer = Player.rock;
 
@@ -64,10 +62,38 @@ class HomeCubit extends Cubit<HomeStates> {
     if (theUpdated != null) {
       pieces.removeWhere((e) => e.id == theOneWefound!.id);
       pieces.add(theUpdated);
-      currentPlayer = currentPlayer.toggle();
+      final Set<Position>? won = gameController.canHeWin(
+        currentPlayer: currentPlayer,
+        allpositions: positions,
+        allpieces: pieces,
+      );
+      if (won == null) {
+        currentPlayer = currentPlayer.toggle();
+        theOneWefound = null;
+        emit(DragEndState(pieces: pieces, currentPlayer: currentPlayer));
+      } else {
+        //end game
+        theOneWefound = null;
+        emit(
+          EndgameState(
+            positionHeWon: won,
+            currentPlayer: currentPlayer,
+            pieces: pieces,
+          ),
+        );
+      }
+    } else {
+      theOneWefound = null;
+      emit(DragEndState(pieces: pieces, currentPlayer: currentPlayer));
     }
+  }
+
+  void restart() {
     theOneWefound = null;
-    emit(DragEndState(pieces: pieces, currentPlayer: currentPlayer));
+    currentPlayer = currentPlayer.toggle();
+    positions.clear();
+    pieces.clear();
+    emit(InitialState(currentPlayer: currentPlayer));
   }
 }
 //LEGAL MOVES IMPLEMENTATION IS WHAT REMAINING
