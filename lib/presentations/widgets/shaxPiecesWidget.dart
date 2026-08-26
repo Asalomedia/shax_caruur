@@ -25,7 +25,7 @@ class ShaxPiecesPaint extends StatelessWidget {
     final double boardSide = (minside - 2 * margin);
     final Size boardSize = Size.square(boardSide); //size of board
     final double jointsRadius = boardSize.width / 30;
-    final double pieceRadius = totalSize.width / 20;
+    final double pieceRadius = totalSize.width / 15;
     final HomeCubit homeCubit = BlocProvider.of<HomeCubit>(context);
 
     return GestureDetector(

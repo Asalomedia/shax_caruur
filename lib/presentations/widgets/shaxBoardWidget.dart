@@ -3,6 +3,8 @@ import 'dart:math' as m;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shax_caruur/models/player.dart' show Player;
+import 'package:shax_caruur/presentations/widgets/score_shower.dart';
 import 'package:shax_caruur/presentations/widgets/shaxPiecesWidget.dart'
     show ShaxPiecesPaint;
 import 'package:shax_caruur/state_management/home_cubit.dart';
@@ -33,23 +35,37 @@ class Shaxboardwidget extends StatelessWidget {
           size: totalSize,
         ),
         ShaxPiecesPaint(state: state, totalSize: totalSize, margin: margin),
-        Positioned(
-          top: 0,
-          right: 0,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
+        ScoreShower(pos: totalSize.width / 5),
+        if (state.currentPlayer == Player.rock)
+          Positioned(
+            top: totalSize.height / 20,
+            right: 0,
             child: IconButton(
               onPressed: () {
                 BlocProvider.of<HomeCubit>(context).restart();
               },
               icon: const Icon(
-                Icons.restart_alt_sharp,
-                color: Colors.white,
+                Icons.radio_button_checked,
+                color: Colors.redAccent,
                 size: 50,
               ),
             ),
           ),
-        ),
+        if (state.currentPlayer == Player.coal)
+          Positioned(
+            top: totalSize.height - totalSize.height / 7.5,
+            right: 0,
+            child: IconButton(
+              onPressed: () {
+                BlocProvider.of<HomeCubit>(context).restart();
+              },
+              icon: const Icon(
+                Icons.radio_button_checked,
+                color: Colors.green,
+                size: 50,
+              ),
+            ),
+          ),
       ],
     );
   }

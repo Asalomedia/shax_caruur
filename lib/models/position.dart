@@ -4,8 +4,26 @@ import 'package:shax_caruur/models/player.dart';
 class Position {
   final int positionId;
   final Offset coordinate;
+  final List<int> legalMovesFromHere;
 
-  Position({required this.positionId, required this.coordinate});
+  Position({
+    required this.positionId,
+    required this.legalMovesFromHere,
+    required this.coordinate,
+  });
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Position && other.positionId == positionId;
+  }
+
+  @override
+  int get hashCode => positionId.hashCode;
+
+  @override
+  String toString() {
+    return "Position(id:$positionId,coordinate:$coordinate,legalto:${legalMovesFromHere.toString()})";
+  }
 }
 
 class Piece {
@@ -33,5 +51,19 @@ class Piece {
       player: newplayer ?? player,
       positionId: posId ?? positionId,
     );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is Piece && other.id == id;
+  }
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  String toString() {
+    return "Piece($id,$coordinate,$player)";
   }
 }

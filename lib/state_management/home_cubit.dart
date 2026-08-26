@@ -4,6 +4,7 @@ import 'package:shax_caruur/game/game_controller.dart';
 import 'package:shax_caruur/game/game_controller_intf.dart';
 import 'package:shax_caruur/models/player.dart';
 import 'package:shax_caruur/models/position.dart';
+import 'package:shax_caruur/models/score.dart';
 
 import 'package:shax_caruur/state_management/home_states.dart'
     show DragEndState, DragingState, EndgameState, HomeStates, InitialState;
@@ -15,6 +16,7 @@ class HomeCubit extends Cubit<HomeStates> {
   final Set<Piece> pieces = {};
   Piece? theOneWefound;
   final IController gameController = GameController();
+  final Score score = Score(score: {Player.rock: 0, Player.coal: 0});
   HomeCubit() : super(InitialState(currentPlayer: currentPlayer));
 
   void registerImportantPositions(List<Position> actualpos) {
@@ -74,6 +76,8 @@ class HomeCubit extends Cubit<HomeStates> {
       } else {
         //end game
         theOneWefound = null;
+        final int? currentScore = score.score[currentPlayer];
+        if (currentScore != null) score.score[currentPlayer] = currentScore + 1;
         emit(
           EndgameState(
             positionHeWon: won,

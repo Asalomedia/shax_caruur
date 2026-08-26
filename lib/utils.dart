@@ -73,39 +73,51 @@ void drawShax(
   circlepaint.color = const Color.fromARGB(173, 255, 255, 255);
   circlepaint.style = PaintingStyle.fill;
   List<Position> actualPositions = [
-    Position(coordinate: Offset(0 + fromLeft, 0 + fromTop), positionId: 1),
+    Position(
+      coordinate: Offset(0 + fromLeft, 0 + fromTop),
+      positionId: 1,
+      legalMovesFromHere: [2, 5, 4],
+    ),
     Position(
       coordinate: Offset(center.dx + fromLeft, 0 + fromTop),
       positionId: 2,
+      legalMovesFromHere: [1, 5, 3],
     ),
     Position(
       coordinate: Offset(size.width + fromLeft, 0 + fromTop),
       positionId: 3,
+      legalMovesFromHere: [2, 5, 6],
     ),
 
     Position(
       coordinate: Offset(0 + fromLeft, center.dy + fromTop),
       positionId: 4,
+      legalMovesFromHere: [1, 5, 7],
     ),
     Position(
       coordinate: Offset(center.dx + fromLeft, center.dy + fromTop),
       positionId: 5,
+      legalMovesFromHere: [1, 2, 3, 4, 6, 7, 8, 9],
     ),
     Position(
       coordinate: Offset(size.width + fromLeft, center.dy + fromTop),
       positionId: 6,
+      legalMovesFromHere: [3, 5, 9],
     ),
     Position(
       coordinate: Offset(0 + fromLeft, size.height + fromTop),
       positionId: 7,
+      legalMovesFromHere: [8, 5, 4],
     ),
     Position(
       coordinate: Offset(center.dx + fromLeft, size.height + fromTop),
       positionId: 8,
+      legalMovesFromHere: [7, 5, 9],
     ),
     Position(
       coordinate: Offset(size.width + fromLeft, size.height + fromTop),
       positionId: 9,
+      legalMovesFromHere: [8, 5, 6],
     ),
   ];
   for (Position position in actualPositions) {
@@ -202,41 +214,35 @@ void drawPockets(
     }
     final Set<Position> positionHeWon = state.positionHeWon;
     final Offset first = positionHeWon.first.coordinate;
+    final Offset middle = positionHeWon.elementAt(1).coordinate;
     final Offset last = positionHeWon.last.coordinate;
     final Paint winingLinePaint = Paint();
     winingLinePaint.strokeWidth = size.width / 40;
     winingLinePaint.color = currentPlayer == Player.rock
         ? Colors.red
         : Colors.yellow;
-    canvas.drawLine(first, last, winingLinePaint);
+    canvas.drawLine(first, middle, winingLinePaint);
+    canvas.drawLine(middle, last, winingLinePaint);
   }
 
-  _currentPlayerShower(canvas, state, radius, size);
+  _playerShower(canvas, state, radius, size);
 }
 
-void _currentPlayerShower(
-  Canvas canvas,
-  HomeStates state,
-  double radius,
-  Size size,
-) {
-  if (state.currentPlayer == Player.rock) {
-    _paintPlayer(
-      canvas,
-      size,
-      state,
-      Offset(radius, size.height / 10),
-      state.currentPlayer.toString(),
-    );
-  } else {
-    _paintPlayer(
-      canvas,
-      size,
-      state,
-      Offset(radius, size.height - size.height / 10),
-      state.currentPlayer.toString(),
-    );
-  }
+void _playerShower(Canvas canvas, HomeStates state, double radius, Size size) {
+  _paintPlayer(
+    canvas,
+    size,
+    state,
+    Offset(radius, size.height / 10),
+    Player.rock,
+  );
+  _paintPlayer(
+    canvas,
+    size,
+    state,
+    Offset(radius, size.height - size.height / 10),
+    Player.coal,
+  );
 }
 
 void _paintPlayer(
@@ -244,15 +250,15 @@ void _paintPlayer(
   Size size,
   HomeStates state,
   Offset pos,
-  String text,
+  Player player,
 ) {
   // 2. Wrap content in a TextSpan
   final textSpan = TextSpan(
-    text: state.runtimeType == EndgameState ? "$text ayaa guulaystay" : text,
+    text: player.toString(),
     style: TextStyle(
       fontWeight: FontWeight(600),
       fontSize: size.width / 20,
-      color: state.currentPlayer == Player.rock ? Colors.red : Colors.black,
+      color: player == Player.rock ? Colors.red : Colors.black,
     ),
   );
 

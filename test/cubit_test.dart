@@ -10,8 +10,12 @@ void main() {
   setUp(() {
     homeCubit = HomeCubit();
     mockpositons = [
-      Position(positionId: 23, coordinate: Offset(0, 0)),
-      Position(positionId: 2, coordinate: Offset(0, 1)),
+      Position(
+        positionId: 23,
+        coordinate: Offset(0, 0),
+        legalMovesFromHere: [],
+      ),
+      Position(positionId: 2, coordinate: Offset(0, 1), legalMovesFromHere: []),
     ];
   });
   group("home cubit", () {

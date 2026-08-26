@@ -64,7 +64,7 @@ class GameController implements IController {
     for (Piece piece in pocket) {
       final Offset diff = whereYouTapped - piece.coordinate;
       final distance = diff.distance;
-      if (distance <= pieceRadius) {
+      if (distance <= pieceRadius * 1.5) {
         if (piece.positionId == null) {
           //if piece is not played yet, do it
           return piece;
@@ -98,16 +98,26 @@ class GameController implements IController {
     for (Position position in actualpositions) {
       final Offset diff = whereDragEnds - position.coordinate;
       final double distance = diff.distance;
-      if (distance <= (pieceRadius + posRadius * 2)) {
+      if (distance <= (pieceRadius * 2 + posRadius * 2)) {
         final bool occupied = _thisPositionIsOccupied(
           position.positionId,
           pieces,
         );
         if (!occupied) {
-          return piece.copyWith(
-            newcoordinate: position.coordinate,
-            posId: position.positionId,
-          );
+          if (piece.positionId == null) {
+            return piece.copyWith(
+              newcoordinate: position.coordinate,
+              posId: position.positionId,
+            );
+          } else {
+            //this position can go only legal ones
+            if (isLegal(piece.positionId!, actualpositions, position)) {
+              return piece.copyWith(
+                newcoordinate: position.coordinate,
+                posId: position.positionId,
+              );
+            }
+          }
         }
       }
     }
@@ -131,5 +141,16 @@ class GameController implements IController {
 
   Set<Piece> _piecesPlayed(Set<Piece> pieces) {
     return pieces.where((e) => e.positionId != null).toSet();
+  }
+
+  bool isLegal(
+    int positionId,
+    Set<Position> actualpositions,
+    Position nwPosition,
+  ) {
+    final Position whereItISAt = actualpositions.firstWhere(
+      (p) => p.positionId == positionId,
+    );
+    return whereItISAt.legalMovesFromHere.contains(nwPosition.positionId);
   }
 }
