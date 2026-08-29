@@ -2,7 +2,8 @@ import 'dart:developer';
 
 import 'package:flutter/widgets.dart';
 import 'package:shax_caruur/state_management/home_cubit.dart';
-import 'package:shax_caruur/state_management/home_states.dart' show HomeStates;
+import 'package:shax_caruur/state_management/home_states.dart'
+    show EndgameState, HomeStates;
 import 'package:shax_caruur/utils.dart' as utils;
 
 class ShaxPiecesPaint extends StatelessWidget {
@@ -23,7 +24,9 @@ class ShaxPiecesPaint extends StatelessWidget {
     return GestureDetector(
       onPanStart: (details) {
         final Offset whereIHit = details.localPosition;
-        homeCubit.dragStart(whereIHit, state.currentPlayer);
+        if (state.runtimeType != EndgameState) {
+          homeCubit.dragStart(whereIHit, state.currentPlayer);
+        }
       },
       onPanUpdate: (details) {
         final Offset whereIsNow = details.localPosition;
