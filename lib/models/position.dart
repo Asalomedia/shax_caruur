@@ -4,9 +4,11 @@ import 'package:shax_caruur/models/player.dart';
 class Position {
   final int positionId;
   final Offset coordinate;
+  final double radius;
   final List<int> legalMovesFromHere;
 
   Position({
+    required this.radius,
     required this.positionId,
     required this.legalMovesFromHere,
     required this.coordinate,
@@ -30,10 +32,12 @@ class Piece {
   final int id;
   final Player player;
   final Offset coordinate;
+  final double pieceRadius;
   final int? positionId;
 
   Piece({
     required this.id,
+    required this.pieceRadius,
     this.positionId,
     required this.coordinate,
     required this.player,
@@ -44,12 +48,14 @@ class Piece {
     Player? newplayer,
     Offset? newcoordinate,
     int? posId,
+    double? npieceRadius,
   }) {
     return Piece(
       id: newid ?? id,
       coordinate: newcoordinate ?? coordinate,
       player: newplayer ?? player,
       positionId: posId ?? positionId,
+      pieceRadius: npieceRadius ?? pieceRadius,
     );
   }
 

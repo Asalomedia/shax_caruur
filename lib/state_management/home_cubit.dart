@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart' show Offset;
+import 'dart:developer';
+
+import 'package:flutter/material.dart' show Offset, Size;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shax_caruur/game/game_controller.dart';
 import 'package:shax_caruur/game/game_controller_intf.dart';
@@ -9,100 +11,85 @@ import 'package:shax_caruur/models/score.dart';
 import 'package:shax_caruur/state_management/home_states.dart'
     show DragEndState, DragingState, EndgameState, HomeStates, InitialState;
 
-Player currentPlayer = Player.rock;
+Player currentPlayer = Player.red;
 
 class HomeCubit extends Cubit<HomeStates> {
-  final Set<Position> positions = {};
-  final Set<Piece> pieces = {};
-  Piece? theOneWefound;
+  final Score score = Score(score: {Player.red: 0, Player.green: 0});
   final IController gameController = GameController();
-  final Score score = Score(score: {Player.rock: 0, Player.coal: 0});
   HomeCubit() : super(InitialState(currentPlayer: currentPlayer));
 
-  void registerImportantPositions(List<Position> actualpos) {
-    positions.addAll(actualpos);
+  void setSize(Size totalSize) {
+    gameController.setSize(totalSize);
   }
 
-  void registerPieces(List<Piece> orginalpiecel) {
-    pieces.addAll(orginalpiecel);
+  void registerPositionsAndPieces() {
+    gameController.fillPositionsAndPieces();
   }
 
-  Piece? findPieceIHit(
-    Offset whereIHit,
-    double pieceRadius,
-    Player currentPlayer,
-  ) {
-    final Piece? piece = gameController.hitPiece(
+  void dragStart(Offset whereIHit, Player currentPlayer) {
+    gameController.hitPiece(
       whereYouTapped: whereIHit,
-      pieceRadius: pieceRadius,
-      availablePieces: pieces,
       currentPlayer: currentPlayer,
     );
-    if (piece != null) {
-      theOneWefound = piece;
-    }
-    return piece;
   }
 
   void updatePieceLocation(Offset newLocation) {
-    theOneWefound = theOneWefound!.copyWith(newcoordinate: newLocation);
-    final Set<Piece> newPieces = pieces.map((e) {
-      return e.id == theOneWefound!.id ? theOneWefound! : e;
+    final Piece theOneweFound = gameController.getTheOneWefound!;
+    gameController.setTheOneWeFound = theOneweFound.copyWith(
+      newcoordinate: newLocation,
+    );
+    final Set<Piece> newPieces = gameController.getPieces.map((e) {
+      return e.id == theOneweFound.id ? theOneweFound : e;
     }).toSet();
     emit(DragingState(pieces: newPieces, currentPlayer: currentPlayer));
   }
 
-  void dragEnds(Offset whereDragEnds, double pieceRadius, double posRadius) {
-    final Piece? theUpdated = gameController.putPieceOnPosition(
-      piece: theOneWefound!,
+  void dragEnds(Offset whereDragEnds) {
+    final bool successfullyPut = gameController.putPieceOnPosition(
       whereDragEnds: whereDragEnds,
-      pieceRadius: pieceRadius,
-      posRadius: posRadius,
-      actualpositions: positions,
-      pieces: pieces,
     );
-    if (theUpdated != null) {
-      pieces.removeWhere((e) => e.id == theOneWefound!.id);
-      pieces.add(theUpdated);
-      final Set<Position>? won = gameController.canHeWin(
+    if (successfullyPut) {
+      final Set<Position>? wline = gameController.canHeWin(
         currentPlayer: currentPlayer,
-        allpositions: positions,
-        allpieces: pieces,
       );
-      if (won == null) {
+      if (wline == null) {
         currentPlayer = currentPlayer.toggle();
-        theOneWefound = null;
-        emit(DragEndState(pieces: pieces, currentPlayer: currentPlayer));
+        emit(
+          DragEndState(
+            pieces: gameController.getPieces,
+            currentPlayer: currentPlayer,
+          ),
+        );
       } else {
-        //end game
-        theOneWefound = null;
-        final int? currentScore = score.score[currentPlayer];
-        if (currentScore != null) score.score[currentPlayer] = currentScore + 1;
+        //he won
+        int? s = score.score[currentPlayer];
+        if (s != null) score.score[currentPlayer] = s + 1;
         emit(
           EndgameState(
-            positionHeWon: won,
+            positionHeWon: wline,
+            pieces: gameController.getPieces,
             currentPlayer: currentPlayer,
-            pieces: pieces,
           ),
         );
       }
     } else {
-      theOneWefound = null;
-      emit(DragEndState(pieces: pieces, currentPlayer: currentPlayer));
+      //drag ends but player will not change he failed to put it in good position
+      emit(
+        DragEndState(
+          pieces: gameController.getPieces,
+          currentPlayer: currentPlayer,
+        ),
+      );
     }
   }
 
   void restart() {
-    theOneWefound = null;
+    gameController.restart();
     currentPlayer = currentPlayer.toggle();
-    positions.clear();
-    pieces.clear();
     emit(InitialState(currentPlayer: currentPlayer));
   }
 
   void dispose() {
-    theOneWefound = null;
-    positions.clear();
-    pieces.clear();
+    gameController.dispose();
   }
 }

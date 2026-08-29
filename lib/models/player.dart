@@ -1,8 +1,8 @@
 enum Player {
-  rock,
-  coal;
+  red,
+  green;
 
-  Player toggle() => this == Player.rock ? Player.coal : Player.rock;
+  Player toggle() => this == Player.red ? Player.green : Player.red;
   @override
-  String toString() => this == Player.rock ? "Dhagax" : "Dhuxul";
+  String toString() => this == Player.red ? "Red" : "Green";
 }

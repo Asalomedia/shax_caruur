@@ -4,7 +4,7 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
 class ConfettiApp extends StatefulWidget {
-  const new({super.key});
+  const ConfettiApp({super.key});
 
   @override
   State<ConfettiApp> createState() => _ConfettiAppState();

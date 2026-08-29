@@ -14,13 +14,18 @@ class ScoreShower extends StatelessWidget {
       top: 0,
       child: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Text(
-          '''${homeCubit.score.score.keys.first} ${homeCubit.score.score.values.first}: ${homeCubit.score.score.values.last} ${homeCubit.score.score.keys.last} 
-        ''',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+        child: RichText(
+          text: TextSpan(
+            text:
+                '''  ${homeCubit.score.score.keys.first} ${homeCubit.score.score.values.first} : ${homeCubit.score.score.values.last} ${homeCubit.score.score.keys.last} 
+          ''',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              backgroundColor: Colors.black,
+              height: 1.5,
+            ),
           ),
         ),
       ),

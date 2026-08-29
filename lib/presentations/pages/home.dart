@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:shax_caruur/presentations/widgets/shaxBoardWidget.dart';
+import 'package:shax_caruur/presentations/widgets/board.dart';
 import 'package:shax_caruur/state_management/home_cubit.dart';
 import 'package:shax_caruur/state_management/home_states.dart';
 
@@ -16,10 +16,19 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late HomeCubit homeCubit;
+  late Size size;
   @override
   void initState() {
     super.initState();
     homeCubit = BlocProvider.of<HomeCubit>(context);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    size = MediaQuery.sizeOf(context);
+    homeCubit.setSize(size);
+    homeCubit.registerPositionsAndPieces();
   }
 
   @override
@@ -30,8 +39,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
       extendBodyBehindAppBar: true,
       extendBody: true,
@@ -41,20 +48,17 @@ class _HomeState extends State<Home> {
         height: size.height,
         decoration: const BoxDecoration(
           gradient: SweepGradient(
-            center: Alignment(0.5, -0.5),
-            startAngle: 0.0,
-            endAngle: 3.14 * 2,
+            center: Alignment.center,
             colors: [
-              Colors.red,
-              Colors.blueAccent,
-              Colors.deepPurple,
-              Colors.orange,
+              Color(0xFFFF007A), // Hot Pink
+              Color(0xFF7928CA), // Deep Purple
+              Color(0xFFB800FF), // Neon Violet
+              Color(0xFFFF007A), // Seamless finish
             ],
-            tileMode: TileMode.repeated,
+            stops: [0.0, 0.35, 0.7, 1.0],
           ),
         ),
-        child: BlocConsumer<HomeCubit, HomeStates>(
-          listener: (context, state) {},
+        child: BlocBuilder<HomeCubit, HomeStates>(
           builder: (context, state) {
             if (state.runtimeType == InitialState) {
               log("yeey it is initial");
@@ -77,17 +81,13 @@ class _HomeState extends State<Home> {
   }
 
   Widget stateWidget(HomeStates state) {
-    return LayoutBuilder(
-      builder: (context, constraint) {
-        return UnconstrainedBox(
-          alignment: Alignment.center,
-          child: Shaxboardwidget(
-            constraint: constraint,
-            homeCubit: homeCubit,
-            state: state,
-          ),
-        );
-      },
+    return UnconstrainedBox(
+      alignment: Alignment.center,
+      child: Shaxboardwidget(
+        totalSize: size,
+        homeCubit: homeCubit,
+        state: state,
+      ),
     );
   }
 }

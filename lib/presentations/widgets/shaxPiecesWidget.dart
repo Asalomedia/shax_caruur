@@ -2,7 +2,6 @@ import 'dart:developer';
 import 'dart:math' as m;
 
 import 'package:flutter/widgets.dart';
-import 'package:shax_caruur/models/position.dart';
 import 'package:shax_caruur/state_management/home_cubit.dart';
 import 'package:shax_caruur/state_management/home_states.dart' show HomeStates;
 import 'package:shax_caruur/utils.dart' as utils;
@@ -22,44 +21,28 @@ class ShaxPiecesPaint extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final minside = m.min(totalSize.width, totalSize.height);
-    final double boardSide = (minside - 2 * margin);
-    final Size boardSize = Size.square(boardSide); //size of board
-    final double jointsRadius = boardSize.width / 30;
-    final double pieceRadius = totalSize.width / 15;
-
     return GestureDetector(
       onPanStart: (details) {
         final Offset whereIHit = details.localPosition;
-        final Piece? piece = homeCubit.findPieceIHit(
-          whereIHit,
-          pieceRadius,
-          state.currentPlayer,
-        );
-        if (piece != null) {
-          log(piece.player.toString());
-        }
+        homeCubit.dragStart(whereIHit, state.currentPlayer);
       },
       onPanUpdate: (details) {
         final Offset whereIsNow = details.localPosition;
-        if (homeCubit.theOneWefound != null) {
+
+        if (homeCubit.gameController.getTheOneWefound != null) {
           homeCubit.updatePieceLocation(whereIsNow);
         }
       },
       onPanEnd: (details) {
         ///// how to cancel pan or drag lke person released
-        if (homeCubit.theOneWefound != null) {
+        if (homeCubit.gameController.getTheOneWefound != null) {
           final Offset whereDragEnds = details.localPosition;
-          homeCubit.dragEnds(whereDragEnds, pieceRadius, jointsRadius);
+          homeCubit.dragEnds(whereDragEnds);
         }
       },
 
       child: CustomPaint(
-        painter: ShaxPiecesPainter(
-          homeCubit,
-          state: state,
-          pieceRadius: pieceRadius,
-        ),
+        painter: ShaxPiecesPainter(homeCubit, state: state),
         size: totalSize,
       ),
     );
@@ -69,23 +52,12 @@ class ShaxPiecesPaint extends StatelessWidget {
 class ShaxPiecesPainter extends CustomPainter {
   final HomeCubit homeCubit;
   final HomeStates state;
-  final double pieceRadius;
-  ShaxPiecesPainter(
-    this.homeCubit, {
-    required this.state,
-    required this.pieceRadius,
-  });
+  ShaxPiecesPainter(this.homeCubit, {required this.state});
   @override
   void paint(Canvas canvas, Size totalSize) {
     final double aspecrationsimp = totalSize.width / totalSize.height;
     if (aspecrationsimp < 0.65) {
-      utils.drawPockets(
-        canvas,
-        totalSize,
-        homeCubit: homeCubit,
-        state: state,
-        radius: pieceRadius,
-      );
+      utils.drawPockets(canvas, totalSize, homeCubit: homeCubit, state: state);
     } else {
       log("not phone");
     }
