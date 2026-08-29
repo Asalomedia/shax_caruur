@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart' show Offset, Size;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shax_caruur/game/game_controller.dart';
